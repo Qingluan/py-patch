@@ -16,18 +16,6 @@ parser.add_argument("-r", "--replace", default=tmp_search, help="which key will 
 parser.add_argument("-p","--path", default=".", type=str, help="setting a path as root path  to search. defualt: \".\"")
 parser.add_argument("--resume", default=False, action="store_true", help="resume all files , which has patched ")
 
-args = parser.parse_args()
-tmp_search = args.replace
-if not args.temp_file:
-    with open("/tmp/tmp-file", "w") as fp:
-        fp.write(TMP_CONTENT)
-    tmp = "/tmp/tmp-file"
-else:
-    tmp = args.temp_file
-
-if not os.path.exists(tmp):
-    print("tmp file not exists !")
-    sys.exit(1)
 
 def _replace(raw, tmp_file):
     pre_space = 0
@@ -84,9 +72,23 @@ def replace(f, line , comp, tmp):
 
 
 def main():
-    if args.resume:
-        tmp_search = "##<!>"
-
+    global tmp_search
+    args = parser.parse_args()
+    tmp_search = args.replace
+    TMP_CONTENT = "logging.info(\"ipin:%s\"% conn[0])"
+    if not args.temp_file:
+        with open("/tmp/tmp-file", "w") as fp:
+            fp.write(TMP_CONTENT)
+        tmp = "/tmp/tmp-file"
+    else:
+        tmp = args.temp_file
+    
+    if not os.path.exists(tmp):
+        print("tmp file not exists !")
+        sys.exit(1)
+        if args.resume:
+            tmp_search = "##<!>"
+    
     w = os.popen("grep -nr \"%s\"  %s" %  (tmp_search, args.path) ).readlines()
     for l in w:
         f,line,_ = l.split(" ")[0].split(":")
