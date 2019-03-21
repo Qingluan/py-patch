@@ -9,11 +9,13 @@ base = os.path.basename
 
 tmp_search = "self._server_socket.accept"
 TMP_CONTENT = "logging.info(\"ipin:%s\"% conn[0])"
+paths = sys.path
 
 parser = argparse.ArgumentParser()
+parser.add_argument("path",nargs="*", default=paths, type=str, help="setting  paths as root path  to search. default: \"{}\"".format(paths))
+parser.add_argument("-k","--path-key", default="shadowsocks", help="path must contains this str")
 parser.add_argument("-t","--temp-file", help="which tmp file will be patch")
 parser.add_argument("-r", "--replace", default=tmp_search, help="which key will be search and replace, default: %s" %tmp_search)
-parser.add_argument("-p","--path", default=".", type=str, help="setting a path as root path  to search. defualt: \".\"")
 parser.add_argument("--resume", default=False, action="store_true", help="resume all files , which has patched ")
 
 
@@ -89,14 +91,20 @@ def main():
         if args.resume:
             tmp_search = "##<!>"
     
-    w = os.popen("grep -nr \"%s\"  %s" %  (tmp_search, args.path) ).readlines()
-    for l in w:
-        f,line,_ = l.split(" ")[0].split(":")
-        if base(f) == self_name:continue
-        print(f, line)
-        if args.resume:
-            resume(f)
-        else:
-            replace(f, line, tmp_search, tmp)
+    an = input("use path : %s \n [yes/no]" % "\n".join(args.path))
+    if an != "yes":
+        print("ok byeA")
+        sys.exit(0)
+    for p in args.path:
+        if not args.path_key in p:continue
+        w = os.popen("grep -nr \"%s\"  %s" %  (tmp_search, p) ).readlines()
+        for l in w:
+            f,line,_ = l.split(" ")[0].split(":")
+            if base(f) == self_name:continue
+            print(f, line)
+            if args.resume:
+                resume(f)
+            else:
+                replace(f, line, tmp_search, tmp)
 
 
