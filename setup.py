@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 
 setup(name='py_patch',
-    version='0.0.0',
+    version='0.0.3',
     description='some',
     url='https://github.com/xxx',
     author='auth',
