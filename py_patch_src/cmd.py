@@ -100,9 +100,9 @@ def main():
         print("ok byeA")
         sys.exit(0)
     for p in args.path:
-        if not args.path_key in p:continue
         w = os.popen("grep -nr \"%s\"  %s" %  (tmp_search, p) ).readlines()
         for l in w:
+            if not args.path_key in l:continue
             f,line,_ = l.split(" ")[0].split(":")
             if base(f) == self_name:continue
             print(f, line)
