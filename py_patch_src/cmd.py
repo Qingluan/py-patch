@@ -4,6 +4,10 @@ import sys
 from base64 import b64encode, b64decode
 import argparse
 
+PY = sys.version[0]
+if PY == '2':
+    input = raw_input
+
 self_name = os.path.basename(__file__)
 base = os.path.basename
 
